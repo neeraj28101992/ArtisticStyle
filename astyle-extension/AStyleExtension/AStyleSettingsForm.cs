@@ -48,7 +48,7 @@ namespace AStyleExtension {
 					break;
 				case Language.Cpp:
                 case Language.CppHeader:
-                    Text = "AStyle C/C++ Settings";
+                    Text = "AStyle C/C++ Settings"; 
 					break;
 			}
 
