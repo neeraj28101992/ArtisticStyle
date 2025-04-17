@@ -15,6 +15,7 @@ namespace AStyleExtension {
                 case Language.CppHeader:
                     Text = "Edit AStyle C/C++ - *.h Command Line";
                     break;
+
             }
 
             ActiveControl = buttonCancel;
