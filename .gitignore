@@ -1,0 +1,7 @@
+/astyle-extension/AStyleExtension/bin
+/astyle-extension/AStyleExtension/obj
+/astyle-extension/*.suo
+/astyle-extension/*.user
+/astyle-extension/AStyleExtension/*.user
+packages
+.vs
