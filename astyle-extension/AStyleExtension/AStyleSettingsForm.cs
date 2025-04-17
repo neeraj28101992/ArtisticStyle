@@ -8,7 +8,8 @@ namespace AStyleExtension {
 	public enum Language {
 		NA,
 		Cpp,
-		CSharp,
+        CppHeader,
+        CSharp,
 		Java
 	}
 
@@ -46,7 +47,8 @@ namespace AStyleExtension {
 					Text = "AStyle C# Settings";
 					break;
 				case Language.Cpp:
-					Text = "AStyle C/C++ Settings";
+                case Language.CppHeader:
+                    Text = "AStyle C/C++ Settings";
 					break;
 			}
 
@@ -169,7 +171,8 @@ namespace AStyleExtension {
 					checkBoxAttachInlines.Visible = false;
 					break;
 				case Language.Cpp:
-					comboBoxMode.SelectedIndex = 0;
+                case Language.CppHeader:
+                    comboBoxMode.SelectedIndex = 0;
 					checkBoxAttachExternC.Visible = true;
 					checkBoxAttachInlines.Visible = true;
 					break;
@@ -351,7 +354,7 @@ namespace AStyleExtension {
 			if (sb.Length > 1) {
 				if (_language == Language.CSharp) {
 					sb.Append("--mode=cs");
-				} else if (_language == Language.Cpp) {
+				} else if (_language == Language.Cpp || _language == Language.CppHeader) {
 					sb.Append("--mode=c");
 				}
 			}

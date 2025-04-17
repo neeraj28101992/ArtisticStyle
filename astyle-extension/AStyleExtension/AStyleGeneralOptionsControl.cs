@@ -6,9 +6,11 @@ using System.Xml.Serialization;
 namespace AStyleExtension {
     public partial class AStyleGeneralOptionsControl : UserControl {
         private string _cppOptions;
+        private string _cppHeaderOptions;
         private string _csOptions;
         private bool _isCSarpEnabled;
         private bool _cppFormatOnSave;
+        private bool _cppHeaderFormatOnSave;
         private bool _csFormatOnSave;
 
         public bool CppFormatOnSave {
@@ -20,6 +22,21 @@ namespace AStyleExtension {
             set {
                 _cppFormatOnSave = value;
                 checkBoxCppFormatOnSave.Checked = value;
+            }
+        }
+
+        public bool CppHeaderFormatOnSave
+        {
+            get
+            {
+                _cppHeaderFormatOnSave = SaveFormatHeader.Checked;
+                return _cppHeaderFormatOnSave;
+
+            }
+            set
+            {
+                _cppHeaderFormatOnSave = value;
+                SaveFormatHeader.Checked = value;
             }
         }
 
@@ -39,6 +56,16 @@ namespace AStyleExtension {
             set {
                 _cppOptions = value;
                 textBoxCPP.Text = _cppOptions;
+            }
+        }
+
+        public string CppHeaderOptions
+        {
+            get { return _cppHeaderOptions; }
+            set
+            {
+                _cppHeaderOptions = value;
+                CppTextHeader.Text = _cppHeaderOptions;
             }
         }
 
@@ -127,8 +154,10 @@ namespace AStyleExtension {
 
             var settings = new AStyleSettings {
                 CppCommandLine = CppOptions,
+                CppHeaderCommandLine = CppHeaderOptions,
                 CsCommandLine = CsOptions,
                 CppFormatOnSave = CppFormatOnSave,
+                CppHeaderFormatOnSave = CppHeaderFormatOnSave,
                 CsFormatOnSave = CsFormatOnSave,
                 Version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString()
             };
@@ -178,6 +207,9 @@ namespace AStyleExtension {
             CppOptions = settings.CppCommandLine;
             checkBoxCppFormatOnSave.Checked = settings.CppFormatOnSave;
 
+            CppHeaderOptions = settings.CppHeaderCommandLine;
+            SaveFormatHeader.Checked = settings.CppHeaderFormatOnSave;
+
             if (IsCSarpEnabled) {
                 CsOptions = settings.CsCommandLine;
                 checkBoxCsFormatOnSave.Checked = settings.CsFormatOnSave;
@@ -185,6 +217,34 @@ namespace AStyleExtension {
 
 
             textBoxDetails.Text = String.Format("Your settings were successfully imported from {0}.{1}Click OK to save the changes.", openFileDialog.FileName, Environment.NewLine);
+        }
+
+        private void OnButtonCPPHeaderSettingsClick(object sender, EventArgs e)
+        {
+            var form = new AStyleSettingsForm(Language.CppHeader);
+            form.SetControls(CppHeaderOptions);
+
+            if (form.ShowDialog() != DialogResult.OK)
+            {
+                return;
+            }
+
+            CppHeaderOptions = form.GetCommandLine();
+            CppTextHeader.Text = CppHeaderOptions;
+        }
+
+        private void OnButtonCPPHeaderEditClick(object sender, EventArgs e)
+        {
+            var form = new AStyleEditForm(Language.CppHeader);
+            form.SetCommandLine(CppHeaderOptions);
+
+            if (form.ShowDialog() != DialogResult.OK)
+            {
+                return;
+            }
+
+            CppHeaderOptions = form.GetCommandLine();
+            CppTextHeader.Text = CppHeaderOptions;
         }
     }
 }

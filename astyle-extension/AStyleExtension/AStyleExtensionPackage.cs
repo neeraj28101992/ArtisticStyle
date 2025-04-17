@@ -72,8 +72,26 @@ namespace AStyleExtension {
 
 			string lang = doc.Language.ToLower();
 			if (lang == "gcc" || lang == "avrgcc" || lang == "c/c++") {
-				language = Language.Cpp;
-			} else if (lang == "csharp" && _isCSharpEnabled) {
+                string FileName = doc.Name.ToLower();
+                string[] sPatterns =
+                {
+                    "^.*\\.h$",
+                    "^.*\\.hxx$",
+                    "^.*\\.hpp$"
+                };
+                foreach (string sPattern in sPatterns)
+                {
+                    if (System.Text.RegularExpressions.Regex.IsMatch(FileName, sPattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase))
+                    {
+                        language = Language.CppHeader;
+                        break;
+                    }
+                    else
+                    {
+                        language = Language.Cpp;
+                    }
+                }
+            } else if (lang == "csharp" && _isCSharpEnabled) {
 				language = Language.CSharp;
 			}
 
@@ -81,20 +99,27 @@ namespace AStyleExtension {
 		}
 
 		private int OnBeforeDocumentSave(uint docCookie) {
-			if (!_dialog.CppFormatOnSave && !_dialog.CsFormatOnSave) {
+			if (!_dialog.CppFormatOnSave && !_dialog.CsFormatOnSave && !_dialog.CppHeaderFormatOnSave) {
 				return VSConstants.S_OK;
 			}
 
 			var doc = _dte.Documents.OfType<Document>().FirstOrDefault(x => x.FullName == _documentEventListener.GetDocumentName(docCookie));
 			var language = GetLanguage(doc);
 
-			if (language == Language.CSharp && _dialog.CsFormatOnSave) {
+			if (language == Language.CSharp && _dialog.CsFormatOnSave) 
+            {
 				FormatDocument(GetTextDocument(doc), Language.CSharp);
-			} else if (language == Language.Cpp && _dialog.CppFormatOnSave) {
+			} 
+            else if (language == Language.Cpp && _dialog.CppFormatOnSave) 
+            {
 				FormatDocument(GetTextDocument(doc), Language.Cpp);
 			}
+			else if (language == Language.CppHeader && _dialog.CppHeaderFormatOnSave)
+            {
+                FormatDocument(GetTextDocument(doc), Language.CppHeader);
+            }
 
-			return VSConstants.S_OK;
+            return VSConstants.S_OK;
 		}
 
 		private void OnBeforeQueryStatus(object sender, EventArgs e) {
@@ -202,7 +227,13 @@ namespace AStyleExtension {
 				options = _dialog.CsOptions;
 			} else if (language == Language.Cpp) {
 				options = _dialog.CppOptions;
-			} else {
+			} else if (language == Language.CppHeader)
+            {
+                options = _dialog.CppHeaderOptions;
+                //options = (string)_props.Item("CppHeaderOptions").Value;
+            }
+			else
+			{
 				return null;
 			}
 

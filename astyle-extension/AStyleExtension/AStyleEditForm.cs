@@ -10,7 +10,10 @@ namespace AStyleExtension {
                     Text = "Edit AStyle C# Command Line";
                     break;
                 case Language.Cpp:
-                    Text = "Edit AStyle C/C++ Command Line";
+                    Text = "Edit AStyle C/C++ - *.cpp Command Line";
+                    break;
+                case Language.CppHeader:
+                    Text = "Edit AStyle C/C++ - *.h Command Line";
                     break;
             }
 
